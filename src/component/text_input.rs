@@ -94,11 +94,13 @@ impl<B: Backend, F: FnMut(Rect) -> Rect> Component<B> for TextInput<F> {
 
     fn handle_key(&mut self, key: KeyCode, app: &mut App<B>) {
         if key == KeyCode::Backspace {
+            app.do_search = true;
             self.text.pop();
             return;
         }
 
         if let KeyCode::Char(c) = key {
+            app.do_search = true;
             self.text.push(c);
         }
     }

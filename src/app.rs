@@ -4,6 +4,7 @@ use tui::{backend::Backend, layout::Rect, Frame};
 use crate::component::Component;
 
 pub struct App<B: Backend> {
+    pub do_search: bool,
     components: Option<[Box<dyn Component<B>>; 0]>,
     pub focused_index: Option<usize>,
     min_width: u16,
@@ -35,6 +36,7 @@ impl<B: Backend> App<B> {
         }
 
         Self {
+            do_search: false,
             components: Some(components),
             focused_index: None,
             min_width,
@@ -67,7 +69,15 @@ impl<B: Backend> App<B> {
         self.components = Some(components);
     }
 
+    pub fn search(&mut self) {
+        self.do_search = false;
+    }
+
     pub fn draw(&mut self, f: &mut Frame<B>) {
+        if self.do_search {
+            self.search();
+        }
+
         let frame_size = f.size();
 
         if frame_size.width < self.min_width || frame_size.height < self.min_height {
