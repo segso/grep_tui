@@ -18,6 +18,7 @@ pub struct TextInput {
     title: String,
     placeholder: String,
     focus_key: KeyCode,
+    error: bool,
     text: String,
 }
 
@@ -27,12 +28,17 @@ impl TextInput {
             title,
             placeholder,
             focus_key,
+            error: false,
             text: String::new(),
         }
     }
 
     pub fn text(&mut self) -> String {
         self.text.clone()
+    }
+
+    pub fn error(&mut self) {
+        self.error = true;
     }
 }
 
@@ -58,7 +64,9 @@ impl<B: Backend> Component<B> for TextInput {
                 ),
             ]))
             .borders(Borders::ALL)
-            .border_style(Style::default().fg(if is_focused {
+            .border_style(Style::default().fg(if self.error {
+                Color::Red
+            } else if is_focused {
                 Color::Blue
             } else {
                 Color::White
@@ -82,7 +90,10 @@ impl<B: Backend> Component<B> for TextInput {
                 }),
             ),
             if is_focused {
-                Span::styled("⎸", Style::default().fg(Color::Blue))
+                Span::styled(
+                    "⎸",
+                    Style::default().fg(if self.error { Color::Red } else { Color::Blue }),
+                )
             } else {
                 Span::raw("")
             },
@@ -100,12 +111,14 @@ impl<B: Backend> Component<B> for TextInput {
         if key == KeyCode::Backspace {
             app.do_search = true;
             self.text.pop();
+            self.error = false;
             return;
         }
 
         if let KeyCode::Char(c) = key {
             app.do_search = true;
             self.text.push(c);
+            self.error = false;
         }
     }
 }
