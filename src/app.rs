@@ -3,6 +3,7 @@ use tui::{backend::Backend, layout::Rect, Frame};
 
 use crate::{
     component::{file_display::FileDisplay, text_input::TextInput, Component},
+    grep::grep_from_file,
 };
 
 pub struct App<B: Backend> {
@@ -103,6 +104,18 @@ impl<B: Backend> App<B> {
     }
 
     pub fn search(&mut self) {
+        let mut components = self.components.take().unwrap();
+        let results = match grep_from_file(components[1].text(), components[0].text()) {
+            Ok(results) => results,
+            Err(_) => {
+                self.components = Some(components);
+                return;
+            }
+        };
+
+        components[2].set_items(results);
+
+        self.components = Some(components);
         self.do_search = false;
     }
 
