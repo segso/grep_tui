@@ -10,7 +10,7 @@ use tui::{
 
 use super::Component;
 
-pub struct TextInput<F: Fn(Rect) -> Rect> {
+pub struct TextInput<F: FnMut(Rect) -> Rect> {
     title: String,
     placeholder: String,
     focus_key: KeyCode,
@@ -18,7 +18,7 @@ pub struct TextInput<F: Fn(Rect) -> Rect> {
     area: F,
 }
 
-impl<F: Fn(Rect) -> Rect> TextInput<F> {
+impl<F: FnMut(Rect) -> Rect> TextInput<F> {
     pub fn new(title: String, placeholder: String, focus_key: KeyCode, area: F) -> Self {
         Self {
             title,
@@ -30,7 +30,7 @@ impl<F: Fn(Rect) -> Rect> TextInput<F> {
     }
 }
 
-impl<B: Backend, F: Fn(Rect) -> Rect> Component<B> for TextInput<F> {
+impl<B: Backend, F: FnMut(Rect) -> Rect> Component<B> for TextInput<F> {
     fn area(&mut self, area: Rect) -> Rect {
         (self.area)(area)
     }
