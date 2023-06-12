@@ -1,4 +1,4 @@
-use std::io;
+use std::io::{self, Stdout};
 
 use crossterm::{
     event::{self, DisableMouseCapture, EnableMouseCapture, Event, KeyCode, KeyModifiers},
@@ -15,7 +15,7 @@ use app::App;
 pub mod app;
 pub mod component;
 
-pub fn setup_terminal<B: Backend>() -> Result<Terminal<B>, io::Error> {
+pub fn setup_terminal() -> Result<Terminal<CrosstermBackend<Stdout>>, io::Error> {
     enable_raw_mode()?;
     let mut stdout = io::stdout();
     execute!(stdout, EnterAlternateScreen, EnableMouseCapture)?;
@@ -24,7 +24,7 @@ pub fn setup_terminal<B: Backend>() -> Result<Terminal<B>, io::Error> {
     Terminal::new(backend)
 }
 
-pub fn restore_terminal<B: Backend>(mut terminal: Terminal<B>) -> Result<(), io::Error> {
+pub fn restore_terminal(mut terminal: Terminal<CrosstermBackend<Stdout>>) -> Result<(), io::Error> {
     disable_raw_mode()?;
     execute!(
         terminal.backend_mut(),
