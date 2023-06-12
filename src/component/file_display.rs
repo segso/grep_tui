@@ -8,6 +8,8 @@ use tui::{
     Frame,
 };
 
+use crate::app::App;
+
 use super::Component;
 
 pub struct FileDisplay<F: FnMut(Rect) -> Rect> {
@@ -137,7 +139,7 @@ impl<B: Backend, F: FnMut(Rect) -> Rect> Component<B> for FileDisplay<F> {
         KeyCode::Char('r')
     }
 
-    fn handle_key(&mut self, key: KeyCode) {
+    fn handle_key(&mut self, key: KeyCode, _: &mut App<B>) {
         match key {
             KeyCode::Esc => self.unselect(),
             KeyCode::Up | KeyCode::Char('k') => self.prev(),

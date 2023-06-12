@@ -8,13 +8,15 @@ use tui::{
     Frame,
 };
 
+use crate::app::App;
+
 use super::Component;
 
 pub struct TextInput<F: FnMut(Rect) -> Rect> {
     title: String,
     placeholder: String,
     focus_key: KeyCode,
-    text: String,
+    pub text: String,
     area: F,
 }
 
@@ -90,7 +92,7 @@ impl<B: Backend, F: FnMut(Rect) -> Rect> Component<B> for TextInput<F> {
         self.focus_key
     }
 
-    fn handle_key(&mut self, key: KeyCode) {
+    fn handle_key(&mut self, key: KeyCode, app: &mut App<B>) {
         if key == KeyCode::Backspace {
             self.text.pop();
             return;

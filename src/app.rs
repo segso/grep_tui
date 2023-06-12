@@ -4,7 +4,7 @@ use tui::{backend::Backend, layout::Rect, Frame};
 use crate::component::Component;
 
 pub struct App<B: Backend> {
-    components: [Box<dyn Component<B>>; 0],
+    components: Option<[Box<dyn Component<B>>; 0]>,
     pub focused_index: Option<usize>,
     min_width: u16,
     min_height: u16,
@@ -35,7 +35,7 @@ impl<B: Backend> App<B> {
         }
 
         Self {
-            components,
+            components: Some(components),
             focused_index: None,
             min_width,
             min_height,
@@ -43,26 +43,28 @@ impl<B: Backend> App<B> {
     }
 
     pub fn handle_key(&mut self, key: KeyCode) {
+        let mut components = self.components.take().unwrap();
+
         if self.focused_index.is_none() {
-            for (i, component) in self.components.iter().enumerate() {
+            for (i, component) in components.iter().enumerate() {
                 if component.focus_key() == key {
                     self.focused_index = Some(i);
                     break;
                 }
             }
+            self.components = Some(components);
             return;
         }
 
-        let focused_component = self
-            .components
-            .get_mut(self.focused_index.unwrap())
-            .unwrap();
+        let focused_component = components.get_mut(self.focused_index.unwrap()).unwrap();
 
-        focused_component.handle_key(key);
+        focused_component.handle_key(key, self);
 
         if key == KeyCode::Esc {
             self.focused_index = None;
         }
+
+        self.components = Some(components);
     }
 
     pub fn draw(&mut self, f: &mut Frame<B>) {
@@ -72,12 +74,16 @@ impl<B: Backend> App<B> {
             return;
         }
 
-        for (i, component) in self.components.iter_mut().enumerate() {
+        let mut components = self.components.take().unwrap();
+
+        for (i, component) in components.iter_mut().enumerate() {
             let is_focused = self.focused_index.is_some() && self.focused_index.unwrap() == i;
 
             let area = component.area(f.size());
 
             component.render(f, area, is_focused);
         }
+
+        self.components = Some(components);
     }
 }
