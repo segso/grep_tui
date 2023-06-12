@@ -12,31 +12,25 @@ use crate::app::App;
 
 use super::Component;
 
-pub struct TextInput<F: FnMut(Rect) -> Rect> {
+pub struct TextInput {
     title: String,
     placeholder: String,
     focus_key: KeyCode,
-    pub text: String,
-    area: F,
+    text: String,
 }
 
-impl<F: FnMut(Rect) -> Rect> TextInput<F> {
-    pub fn new(title: String, placeholder: String, focus_key: KeyCode, area: F) -> Self {
+impl TextInput {
+    pub fn new(title: String, placeholder: String, focus_key: KeyCode) -> Self {
         Self {
             title,
             placeholder,
             focus_key,
             text: String::new(),
-            area,
         }
     }
 }
 
-impl<B: Backend, F: FnMut(Rect) -> Rect> Component<B> for TextInput<F> {
-    fn area(&mut self, area: Rect) -> Rect {
-        (self.area)(area)
-    }
-
+impl<B: Backend> Component<B> for TextInput {
     fn text(&mut self) -> String {
         self.text.clone()
     }

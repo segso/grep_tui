@@ -12,22 +12,20 @@ use crate::app::App;
 
 use super::Component;
 
-pub struct FileDisplay<F: FnMut(Rect) -> Rect> {
+pub struct FileDisplay {
     state: ListState,
     items: Vec<(u32, String)>,
     title: String,
     focus_key: KeyCode,
-    area: F,
 }
 
-impl<F: FnMut(Rect) -> Rect> FileDisplay<F> {
-    pub fn new(title: String, focus_key: KeyCode, area: F) -> Self {
+impl FileDisplay {
+    pub fn new(title: String, focus_key: KeyCode) -> Self {
         Self {
             state: ListState::default(),
             items: Vec::new(),
             title,
             focus_key,
-            area,
         }
     }
 
@@ -79,11 +77,7 @@ impl<F: FnMut(Rect) -> Rect> FileDisplay<F> {
     }
 }
 
-impl<B: Backend, F: FnMut(Rect) -> Rect> Component<B> for FileDisplay<F> {
-    fn area(&mut self, area: Rect) -> Rect {
-        (self.area)(area)
-    }
-
+impl<B: Backend> Component<B> for FileDisplay {
     fn text(&mut self) -> String {
         String::new()
     }

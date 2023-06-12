@@ -7,7 +7,6 @@ pub mod file_display;
 pub mod text_input;
 
 pub trait Component<B: Backend> {
-    fn area(&mut self, area: Rect) -> Rect;
     fn text(&mut self) -> String;
     fn set_items(&mut self, items: Vec<(u32, String)>);
     fn render(&mut self, f: &mut Frame<B>, area: Rect, is_focused: bool);
