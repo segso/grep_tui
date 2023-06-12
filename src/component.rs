@@ -1,6 +1,8 @@
 use crossterm::event::KeyCode;
 use tui::{backend::Backend, layout::Rect, Frame};
 
+pub mod text_input;
+
 pub trait Component<B: Backend> {
     fn area(&mut self, area: Rect) -> Rect;
     fn render(&mut self, f: &mut Frame<B>, area: Rect, is_focused: bool);
