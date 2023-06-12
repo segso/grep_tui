@@ -14,6 +14,7 @@ use app::App;
 
 pub mod app;
 pub mod component;
+pub mod grep;
 
 pub fn setup_terminal() -> Result<Terminal<CrosstermBackend<Stdout>>, io::Error> {
     enable_raw_mode()?;
