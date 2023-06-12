@@ -2,6 +2,7 @@ use std::{fs, io, path::Path};
 
 pub enum GrepError {
     FileNotFound,
+    PathIsNotFile,
     FileSystemIssue(io::Error),
 }
 
@@ -23,12 +24,18 @@ pub fn grep(file_contents: String, search: String) -> Vec<(u32, String)> {
 }
 
 pub fn grep_from_file(file: String, search: String) -> Result<Vec<(u32, String)>, GrepError> {
-    let path_exists = Path::new(&file)
+    let path = Path::new(&file);
+
+    let path_exists = path
         .try_exists()
         .map_err(|err| GrepError::FileSystemIssue(err))?;
 
     if !path_exists {
         return Err(GrepError::FileNotFound);
+    }
+
+    if !path.is_file() {
+        return Err(GrepError::PathIsNotFile);
     }
 
     let contents = fs::read_to_string(file).map_err(|err| GrepError::FileSystemIssue(err))?;
