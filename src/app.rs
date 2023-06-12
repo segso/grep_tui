@@ -1,11 +1,13 @@
 use crossterm::event::KeyCode;
 use tui::{backend::Backend, layout::Rect, Frame};
 
-use crate::component::Component;
+use crate::{
+    component::{file_display::FileDisplay, text_input::TextInput, Component},
+};
 
 pub struct App<B: Backend> {
     pub do_search: bool,
-    components: Option<[Box<dyn Component<B>>; 0]>,
+    components: Option<[Box<dyn Component<B>>; 3]>,
     pub focused_index: Option<usize>,
     min_width: u16,
     min_height: u16,
@@ -14,7 +16,38 @@ pub struct App<B: Backend> {
 #[allow(clippy::new_without_default)]
 impl<B: Backend> App<B> {
     pub fn new() -> Self {
-        let mut components: [Box<dyn Component<B>>; 0] = [];
+        let mut components: [Box<dyn Component<B>>; 3] = [
+            Box::new(TextInput::new(
+                String::from("Search"),
+                String::from("Foo"),
+                KeyCode::Char('/'),
+                |mut rect| {
+                    rect.height = 3;
+                    rect
+                },
+            )),
+            Box::new(TextInput::new(
+                String::from("File"),
+                String::from("./folder/file.txt"),
+                KeyCode::Char('f'),
+                |mut rect| {
+                    rect.y = 3;
+                    rect.height = 3;
+                    rect
+                },
+            )),
+            Box::new(FileDisplay::new(
+                String::from("Results"),
+                KeyCode::Char('r'),
+                |mut rect| {
+                    if rect.height >= 6 {
+                        rect.height -= 6;
+                    }
+                    rect.y = 6;
+                    rect
+                },
+            )),
+        ];
 
         let mut min_width = 0;
         let mut min_height = 0;
