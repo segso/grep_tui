@@ -92,7 +92,7 @@ impl<B: Backend> Component<B> for FileDisplay {
         let block = Block::default()
             .title(Spans::from(vec![
                 Span::styled(
-                    String::from(" ") + &self.title,
+                    format!(" ({}) {}", self.items.len(), self.title),
                     Style::default().fg(Color::Cyan),
                 ),
                 Span::styled(
