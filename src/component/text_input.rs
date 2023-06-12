@@ -37,6 +37,12 @@ impl<B: Backend, F: FnMut(Rect) -> Rect> Component<B> for TextInput<F> {
         (self.area)(area)
     }
 
+    fn text(&mut self) -> String {
+        self.text.clone()
+    }
+
+    fn set_items(&mut self, _: Vec<(u32, String)>) {}
+
     fn render(&mut self, f: &mut Frame<B>, area: Rect, is_focused: bool) {
         let KeyCode::Char(focus_key) = self.focus_key else {
             return;
