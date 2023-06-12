@@ -115,7 +115,20 @@ impl<B: Backend> App<B> {
 
     pub fn search(&mut self) {
         let mut components = self.components.take().unwrap();
-        let results = match grep_from_file(components[1].text(), components[0].text()) {
+
+        let search_text = components[0]
+            .as_any()
+            .downcast_mut::<TextInput>()
+            .unwrap()
+            .text();
+
+        let file_text = components[1]
+            .as_any()
+            .downcast_mut::<TextInput>()
+            .unwrap()
+            .text();
+
+        let results = match grep_from_file(file_text, search_text) {
             Ok(results) => results,
             Err(_) => {
                 self.components = Some(components);
@@ -123,7 +136,8 @@ impl<B: Backend> App<B> {
             }
         };
 
-        components[2].set_items(results);
+        let file_display: &mut FileDisplay = components[2].as_any().downcast_mut().unwrap();
+        file_display.set_items(results);
 
         self.components = Some(components);
         self.do_search = false;

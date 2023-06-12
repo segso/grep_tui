@@ -1,3 +1,5 @@
+use std::any::Any;
+
 use crossterm::event::KeyCode;
 use tui::{
     backend::Backend,
@@ -78,12 +80,8 @@ impl FileDisplay {
 }
 
 impl<B: Backend> Component<B> for FileDisplay {
-    fn text(&mut self) -> String {
-        String::new()
-    }
-
-    fn set_items(&mut self, items: Vec<(u32, String)>) {
-        self.items = items;
+    fn as_any(&mut self) -> &mut dyn Any {
+        self
     }
 
     fn render(&mut self, f: &mut Frame<B>, area: Rect, is_focused: bool) {

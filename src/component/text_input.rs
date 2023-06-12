@@ -1,3 +1,5 @@
+use std::any::Any;
+
 use crossterm::event::KeyCode;
 use tui::{
     backend::Backend,
@@ -28,14 +30,16 @@ impl TextInput {
             text: String::new(),
         }
     }
+
+    pub fn text(&mut self) -> String {
+        self.text.clone()
+    }
 }
 
 impl<B: Backend> Component<B> for TextInput {
-    fn text(&mut self) -> String {
-        self.text.clone()
+    fn as_any(&mut self) -> &mut dyn Any {
+        self
     }
-
-    fn set_items(&mut self, _: Vec<(u32, String)>) {}
 
     fn render(&mut self, f: &mut Frame<B>, area: Rect, is_focused: bool) {
         let KeyCode::Char(focus_key) = self.focus_key else {
