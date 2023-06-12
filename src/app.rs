@@ -141,18 +141,16 @@ impl<B: Backend> App<B> {
                     .as_any()
                     .downcast_mut::<TextInput>()
                     .unwrap()
-                    .error();
+                    .error(true);
                 return;
             }
         };
 
-        if results.is_empty() {
-            components[0]
-                .as_any()
-                .downcast_mut::<TextInput>()
-                .unwrap()
-                .error();
-        }
+        components[0]
+            .as_any()
+            .downcast_mut::<TextInput>()
+            .unwrap()
+            .error(results.is_empty());
 
         let file_display: &mut FileDisplay = components[2].as_any().downcast_mut().unwrap();
         file_display.set_items(results);

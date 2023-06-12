@@ -37,8 +37,8 @@ impl TextInput {
         self.text.clone()
     }
 
-    pub fn error(&mut self) {
-        self.error = true;
+    pub fn error(&mut self, error: bool) {
+        self.error = error;
     }
 }
 
