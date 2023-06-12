@@ -1,6 +1,7 @@
 use crossterm::event::KeyCode;
 use tui::{backend::Backend, layout::Rect, Frame};
 
+pub mod file_display;
 pub mod text_input;
 
 pub trait Component<B: Backend> {
