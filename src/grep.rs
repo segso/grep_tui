@@ -28,7 +28,7 @@ pub fn grep_from_file(file: String, search: String) -> Result<Vec<(u32, String)>
 
     let path_exists = path
         .try_exists()
-        .map_err(|err| GrepError::FileSystemIssue(err))?;
+        .map_err(GrepError::FileSystemIssue)?;
 
     if !path_exists {
         return Err(GrepError::FileNotFound);
@@ -38,7 +38,7 @@ pub fn grep_from_file(file: String, search: String) -> Result<Vec<(u32, String)>
         return Err(GrepError::PathIsNotFile);
     }
 
-    let contents = fs::read_to_string(file).map_err(|err| GrepError::FileSystemIssue(err))?;
+    let contents = fs::read_to_string(file).map_err(GrepError::FileSystemIssue)?;
 
     Ok(grep(contents, search))
 }
